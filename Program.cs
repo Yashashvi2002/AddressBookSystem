@@ -49,15 +49,17 @@ namespace AddressBookSystem
         static void Main(string[] args)
         {
             AddressBook addressBook = new AddressBook();
-            Contacts contact = new Contacts();
-            contact.FirstName = "Nik";
-            contact.LastName = "Dev";
-            contact.Address = "Chembur";
-            contact.City = "Mumbai";
-            contact.State = "Maharashtra";
-            contact.Zip = "400071";
-            contact.PhoneNumber = "1234567890";
-            contact.Email = "nikdev123.com";
+            Contacts contact = new Contacts
+            {
+                FirstName = "Nikhil",
+                LastName = "Dev",
+                Address = "Chembur",
+                City = "Mumbai",
+                State = "Maharashtra",
+                Zip = "400071",
+                PhoneNumber = "1234567890",
+                Email = "nikdev123.com",
+            };
             addressBook.AddContact(contact);
             addressBook.DisplayContacts();
 
