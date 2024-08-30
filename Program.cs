@@ -110,32 +110,6 @@ namespace AddressBookSystem
                     Console.WriteLine("Invalid input. Please enter 'yes' or 'no'.");
                 }
             }
-
-            //Contacts contact1 = new Contacts
-            //{
-            //    FirstName = "Nikhil",
-            //    LastName = "Dev",
-            //    Address = "Chembur",
-            //    City = "Mumbai",
-            //    State = "Maharashtra",
-            //    Zip = "400071",
-            //    PhoneNumber = "1234567890",
-            //    Email = "nikdev123.com",
-            //};
-
-            //Contacts contact2 = new Contacts
-            //{
-            //    FirstName = "Rahul",
-            //    LastName = "Sharma",
-            //    Address = "Kurla",
-            //    City = "Mumbai",
-            //    State = "Maharashtra",
-            //    Zip = "400072",
-            //    PhoneNumber = "2233445687",
-            //    Email = "rahulsharma123.com",
-            //};
-            //addressBook.AddContact(contact1);
-            //addressBook.AddContact(contact2);
             addressBook.DisplayContacts();
 
 
