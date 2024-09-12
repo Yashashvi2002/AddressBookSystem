@@ -458,6 +458,7 @@ namespace AddressBookSystem
             Console.WriteLine($"Number of contacts in {cityOrState}: {count}");
         }
 
+        //Method to sort contact by name in addressbook
         public void SortContactsByName(AddressBook addressBook)
         {
             if (addressBook != null)
