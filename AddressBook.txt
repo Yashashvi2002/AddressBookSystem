@@ -1,0 +1,8 @@
+AddressBook: Home
+Yashashvi,Devadiga,Chembur,Mumbai,Maharashtra,400071,8454863593,nishu@gmail.com
+EndOfAddressBook
+
+AddressBook: Work
+Nikesh,Devadiga,Chembur,Mumbai,Maharashtra,400071,8779135026,nikesh@gmail.com
+EndOfAddressBook
+
