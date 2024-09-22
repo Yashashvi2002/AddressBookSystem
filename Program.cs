@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System;
-using System.Collections.Generic;
-using System;
 using System.Linq;
 using System.IO;
 using CsvHelper;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace AddressBookSystem
 {
@@ -41,16 +40,43 @@ namespace AddressBookSystem
                    LastName.Equals(other.LastName, StringComparison.OrdinalIgnoreCase);
         }
 
-        // Override GetHashCode method for better performance in collections
+        // Override GetHashCode method for getting better performance in collections
         public override int GetHashCode()
         {
             return FirstName.ToLower().GetHashCode() ^ LastName.ToLower().GetHashCode();
         }
     }
 
-    // AddressBook class to store contacts
+
+    // Validator class to validate contact details
+    public class Validator
+    {
+        public static bool ValidateName(string name)
+        {
+            return Regex.IsMatch(name, @"^[A-Z][a-z]{2,}$");
+        }
+        public static bool ValidateEmail(string email)
+        {
+            return Regex.IsMatch(email, @"^[a-zA-Z0-9]+([._+-][0-9a-zA-Z]+)*@[a-zA-Z0-9-]+.[a-z]{2,3}([.][a-z]{2})*$");
+        }
+        public static bool ValidatePhoneNumber(string phoneNumber)
+        {
+            return Regex.IsMatch(phoneNumber, @"^[1-9]{1}[0-9]{9}$");
+        }
+        public static bool ValidateZip(string zip)
+        {
+            return Regex.IsMatch(zip, @"^[1-9]{1}[0-9]{5}$");
+        }
+
+
+    }
+
+    // AddressBook class to store contacts details
     public class AddressBook
     {
+        Validator validator = new Validator();
+
+        // Dictionaries to store contacts by city and state
         private Dictionary<string, List<Contacts>> cityToContacts = new Dictionary<string, List<Contacts>>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<string, List<Contacts>> stateToContacts = new Dictionary<string, List<Contacts>>(StringComparer.OrdinalIgnoreCase);
 
@@ -93,31 +119,72 @@ namespace AddressBookSystem
 
         }
 
+        // Method to get contact details from user
         public Contacts GetContactDetailsFromUser()
         {
             Console.Write("Enter First Name: ");
             string firstName = Console.ReadLine();
+            if (!Validator.ValidateName(firstName))
+            {
+                Console.WriteLine("Invalid First Name. First Name should start with capital letter and have minimum 3 characters.");
+                return null;
+            }
 
             Console.Write("Enter Last Name: ");
             string lastName = Console.ReadLine();
+            if (!Validator.ValidateName(lastName))
+            {
+                Console.WriteLine("Invalid Last Name. Last Name should start with capital letter and have minimum 3 characters.");
+                return null;
+            }
 
             Console.Write("Enter Address: ");
             string address = Console.ReadLine();
+            if (!Validator.ValidateName(address))
+            {
+                Console.WriteLine("Invalid Address. Address should have minimum 3 characters.");
+                return null;
+            }
 
             Console.Write("Enter City: ");
             string city = Console.ReadLine();
+            if (!Validator.ValidateName(city))
+            {
+                Console.WriteLine("Invalid City. City should have minimum 3 characters.");
+                return null;
+            }
 
             Console.Write("Enter State: ");
             string state = Console.ReadLine();
+            if (!Validator.ValidateName(state))
+            {
+                Console.WriteLine("Invalid State. State should have minimum 3 characters.");
+                return null;
+            }
 
             Console.Write("Enter Zip: ");
             string zip = Console.ReadLine();
+            if (!Validator.ValidateZip(zip))
+            {
+                Console.WriteLine("Invalid Zip. Zip should have 6 digits.");
+                return null;
+            }
 
             Console.Write("Enter Phone Number: ");
             string phoneNumber = Console.ReadLine();
+            if (!Validator.ValidatePhoneNumber(phoneNumber))
+            {
+                Console.WriteLine("Invalid Phone Number. Phone Number should have 10 digits.");
+                return null;
+            }
 
             Console.Write("Enter Email: ");
             string email = Console.ReadLine();
+            if (!Validator.ValidateEmail(email))
+            {
+                Console.WriteLine("Invalid Email. Email should be in proper format.");
+                return null;
+            }
 
             return new Contacts
             {
@@ -134,7 +201,7 @@ namespace AddressBookSystem
 
         public void EditContact(string firstName, string lastName)
         {
-            // Temporary contact for comparison
+            // Temporary contact for comparison between new Details and existing details
             Contacts tempContact = new Contacts
             {
                 FirstName = firstName,
@@ -382,7 +449,7 @@ namespace AddressBookSystem
         }
 
         // Method to add contact to address book to different file formats
-        public void AddContact(AddressBook addressBook, string filePath, string csvPath )
+        public void AddContact(AddressBook addressBook, string filePath, string csvPath)
         {
             bool addMoreContacts = true;
             while (addMoreContacts)
@@ -621,15 +688,15 @@ namespace AddressBookSystem
         {
             using (StreamWriter writer = new StreamWriter(filePath))
             {
-                // Write the header line for consistency with CSV format
+
                 writer.WriteLine("AddressBookName,FirstName,LastName,Address,City,State,Zip,PhoneNumber,Email");
 
                 foreach (var addressBookEntry in addressBooks)
                 {
-                    string addressBookName = addressBookEntry.Key;  
+                    string addressBookName = addressBookEntry.Key;
                     var addressBook = addressBookEntry.Value;
 
-                    // Write each contact's information in the specified format
+
                     foreach (var contact in addressBook.contactList)
                     {
                         writer.WriteLine($"{addressBookName},{contact.FirstName},{contact.LastName},{contact.Address},{contact.City},{contact.State},{contact.Zip},{contact.PhoneNumber},{contact.Email}");
@@ -651,11 +718,11 @@ namespace AddressBookSystem
                     // Split each line by commas
                     string[] contactData = line.Split(',');
 
-                    // Ensure the line contains all necessary contact details (9 columns)
+
                     if (contactData.Length == 9)
                     {
-                        string bookName = contactData[0].Trim();  // AddressBookName
-                        string firstName = contactData[1].Trim().Trim('"'); // Remove any surrounding quotes
+                        string bookName = contactData[0].Trim();
+                        string firstName = contactData[1].Trim().Trim('"');
                         string lastName = contactData[2].Trim();
                         string address = contactData[3].Trim();
                         string city = contactData[4].Trim();
@@ -683,7 +750,7 @@ namespace AddressBookSystem
                             addressBooks[bookName] = new AddressBook(bookName);
                         }
 
-                        // Add the contact to the respective AddressBook
+                        // Add the contact to the AddressBook
                         addressBooks[bookName].contactList.Add(contact);
                     }
                     else
@@ -906,8 +973,8 @@ namespace AddressBookSystem
                     foreach (var addressBook in manager.addressBooks.Values)
                     {
                         addressBook.contactList = addressBook.contactList
-                            .GroupBy(c => new { c.FirstName, c.LastName }) // Group by name
-                            .Select(g => g.First())  // Select first contact in each group
+                            .GroupBy(c => new { c.FirstName, c.LastName })
+                            .Select(g => g.First())
                             .ToList();
                     }
                     break;
@@ -969,9 +1036,9 @@ namespace AddressBookSystem
                         AddressBook editAddressBook = manager.GetAddressBook(editBookName);
                         if (editAddressBook != null)
                         {
-                            if (selectedFormat == "txt") 
+                            if (selectedFormat == "txt")
                                 manager.EditContact(editAddressBook, filePath);
-                            if (selectedFormat == "csv") 
+                            if (selectedFormat == "csv")
                                 manager.EditContact(editAddressBook, csvFilePath);
                             if (selectedFormat == "All")
                                 manager.EditContact(editAddressBook, filePath, csvFilePath);
